@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import {getCookie} from "@/utils/cookies";
+import API_BASE_URL from "@/config/api";
 
-const API_BASE_URL = 'http://localhost:8080/api';
-const ARTICLES_ENDPOINT = `${API_BASE_URL}/articles`;
+const ARTICLES_ENDPOINT =  `${API_BASE_URL}/articles`;
 
 function Input({ id, label, type, name, value, onChange, required }) {
     return (
@@ -98,7 +98,7 @@ export default function EditArticle() {
 
     return (
         <div className="max-w-3xl mx-auto px-6 py-10">
-            <h1 className="text-4xl font-bold text-gray-800 mb-8">Modifier l'article</h1>
+            <h1 className="text-4xl font-bold text-gray-800 mb-8">Modifier l&apos;article</h1>
 
             <div className="bg-white border border-gray-200 rounded-2xl shadow-md p-6">
                 <form onSubmit={handleSubmit} className="space-y-6">

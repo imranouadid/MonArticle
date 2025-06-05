@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useUser } from '@/context/UserContext';
+import API_BASE_URL from '../config/api';
 
 
 export default function Login() {
@@ -18,7 +19,7 @@ export default function Login() {
         setError('');
 
         try {
-            const res = await fetch('http://localhost:8080/api/login', {
+            const res = await fetch(`${API_BASE_URL}/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(form),
@@ -29,7 +30,7 @@ export default function Login() {
             const data = await res.json();
             document.cookie = `token=${data.token}; path=/; max-age=${60 * 60 * 24}; SameSite=Lax;`;
 
-            const fetchUserRes = await fetch('http://localhost:8080/api/users/me', {
+            const fetchUserRes = await fetch(`${API_BASE_URL}/users/me`, {
                 headers: { Authorization: `Bearer ${data.token}` },
             });
             if (!fetchUserRes.ok) throw new Error('Failed to get user info');

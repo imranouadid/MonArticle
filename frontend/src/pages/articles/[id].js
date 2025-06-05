@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import {getCookie} from "@/utils/cookies";
 import {formatDate} from "@/utils/dates";
+import API_BASE_URL from "@/config/api";
 
 
 export default function ReadArticle() {
@@ -20,7 +21,7 @@ export default function ReadArticle() {
                 const token = getCookie('token');
                 if (!token) throw new Error('Not authenticated');
 
-                const res = await fetch(`http://localhost:8080/api/articles/${id}`, {
+                const res = await fetch( `${API_BASE_URL}/articles/${id}`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 if (!res.ok) throw new Error('Failed to fetch article');

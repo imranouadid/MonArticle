@@ -1,10 +1,9 @@
-// /pages/articles/new.js
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import {getCookie} from "@/utils/cookies";
+import API_BASE_URL from "@/config/api";
 
-const API_BASE_URL = 'http://localhost:8080/api';
 const ARTICLES_ENDPOINT = `${API_BASE_URL}/articles`;
 
 function Input({ id, label, type, name, value, onChange, required }) {

@@ -7,6 +7,9 @@ MONGO_CONTAINER := mongo-container
 
 default: help
 
+start: ## Start the app
+	@make build up install create-demo-account cache-clear
+
 build: ## Build images stack
 	@$(COMPOSE) build
 
@@ -31,6 +34,13 @@ sh-backend:  ## Connect to backend container
 
 sh-db:  ## Connect to mongoDB container
 	@docker exec -it $(MONGO_CONTAINER) bash -c "mongosh"
+
+db-create-collections: ## Create mongoDB collections
+	@make backend-exec-cmd OPT="php bin/console doctrine:mongodb:schema:create"
+
+create-demo-account: ## Create Demo account
+	@make backend-exec-cmd OPT="php bin/console app:create-demo-account demo1@gmail.com 'Imran Ouadid'"
+	@make backend-exec-cmd OPT="php bin/console app:create-demo-account demo2@gmail.com 'Amrani Kamal'"
 
 cache-clear: ## Clear cache
 	@make backend-exec-cmd OPT="php bin/console cache:clear && php bin/console cache:warmup"

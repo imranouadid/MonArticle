@@ -3,7 +3,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import {getCookie} from "@/utils/cookies";
 import { useUser } from '@/context/UserContext';
-
+import API_BASE_URL from "@/config/api";
 
 
 export default function ArticleActions({ article, onDelete }) {
@@ -13,7 +13,7 @@ export default function ArticleActions({ article, onDelete }) {
     const handleDelete = async () => {
         setShowModal(false);
         const token = getCookie('token');
-        const res = await fetch(`http://localhost:8080/api/articles/${article.id}`, {
+        const res = await fetch(`${API_BASE_URL}/articles/${article.id}`, {
             method: 'DELETE',
             headers: { Authorization: `Bearer ${token}` },
         });
@@ -48,7 +48,7 @@ export default function ArticleActions({ article, onDelete }) {
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
                     <div className="bg-white rounded-xl shadow-lg max-w-sm w-full p-6 animate-fade-in-up">
                         <h3 className="text-lg font-semibold text-gray-800 mb-4">
-                            Supprimer l'article
+                            Supprimer l&apos;article
                         </h3>
                         <p className="text-sm text-gray-600 mb-6">
                             Êtes-vous sûr de vouloir supprimer{' '}

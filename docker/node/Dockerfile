@@ -1,5 +1,15 @@
 FROM node:lts-alpine
 
-WORKDIR /home/node/app
+WORKDIR /app
 
-CMD ["tail", "-f", "/dev/null"]
+COPY frontend/package*.json ./
+
+RUN npm install
+
+COPY frontend/ ./
+
+RUN npm run build
+
+EXPOSE 3000
+
+CMD ["npm", "run", "start"]

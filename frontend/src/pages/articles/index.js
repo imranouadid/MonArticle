@@ -5,14 +5,13 @@ import Link from 'next/link';
 import ArticleActions from '@/components/ArticleActions';
 import {getCookie} from "@/utils/cookies";
 import {formatDate} from "@/utils/dates";
+import API_BASE_URL from "@/config/api";
 
 
 export default function Articles() {
     const [articles, setArticles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    const [showModal, setShowModal] = useState(false);
-    const [selectedArticle, setSelectedArticle] = useState(null);
 
     useEffect(() => {
         fetchArticles();
@@ -25,7 +24,7 @@ export default function Articles() {
             const token = getCookie('token');
             if (!token) throw new Error('Not authenticated');
 
-            const res = await fetch('http://localhost:8080/api/articles', {
+            const res = await fetch(`${API_BASE_URL}/articles`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             if (!res.ok) throw new Error('Failed to fetch');
@@ -45,25 +44,6 @@ export default function Articles() {
     function removeArticleFromList(id) {
         setArticles(prev => prev.filter(a => a.id !== id));
     }
-
-    // async function handleDeleteConfirmed() {
-    //     if (!selectedArticle) return;
-    //     try {
-    //         const token = getCookie('token');
-    //         const res = await fetch(`http://localhost:8080/api/articles/${selectedArticle.id}`, {
-    //             method: 'DELETE',
-    //             headers: { Authorization: `Bearer ${token}` },
-    //         });
-    //
-    //         if (!res.ok) throw new Error('Failed to delete article');
-    //
-    //         setArticles((prev) => prev.filter((a) => a.id !== selectedArticle.id));
-    //         setShowModal(false);
-    //         setSelectedArticle(null);
-    //     } catch (err) {
-    //         alert('Error deleting article: ' + err.message);
-    //     }
-    // }
 
     if (loading) return <p className="text-center p-6 text-gray-500">Loading articles...</p>;
     if (error) return <p className="text-center p-6 text-red-500">{error}</p>;

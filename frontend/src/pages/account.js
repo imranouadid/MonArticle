@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import Input from '@/components/Input';
 import Modal from '@/components/Modal';
 import { getCookie } from '@/utils/cookies';
+import API_BASE_URL from "@/config/api";
 
 
 export default function AccountPage() {
@@ -9,6 +10,7 @@ export default function AccountPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [form, setForm] = useState({ name: '', email: '' });
+    const [originalEmail, setOriginalEmail] = useState('');
     const [saving, setSaving] = useState(false);
     const [showModal, setShowModal] = useState(false);
 
@@ -19,7 +21,7 @@ export default function AccountPage() {
             return;
         }
 
-        fetch('http://localhost:8080/api/users/me', {
+        fetch(`${API_BASE_URL}/users/me`, {
             headers: { Authorization: `Bearer ${token}` },
         })
             .then(res => {
@@ -29,6 +31,7 @@ export default function AccountPage() {
             .then(data => {
                 setUser(data);
                 setForm({ name: data.name, email: data.email });
+                setOriginalEmail(data.email);
             })
             .catch(err => setError(err.message))
             .finally(() => setLoading(false));
@@ -47,7 +50,7 @@ export default function AccountPage() {
             const token = getCookie('token');
             if (!token) throw new Error('Not authenticated');
 
-            const res = await fetch('http://localhost:8080/api/users/me', {
+            const res = await fetch(`${API_BASE_URL}/users/me`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -60,7 +63,12 @@ export default function AccountPage() {
 
             const updatedUser = await res.json();
             setUser(updatedUser);
-            setShowModal(true); // Show modal on success
+            setShowModal(true);
+
+            if (form.email !== originalEmail) {
+                window.location.href = '/logout';
+                return;
+            }
 
             // Auto-hide modal after 3 seconds
             setTimeout(() => setShowModal(false), 3000);
@@ -96,6 +104,9 @@ export default function AccountPage() {
                     onChange={handleChange}
                     required
                 />
+                <p style={{ fontSize: '0.875rem', color: '#dc2626', marginTop: '0.25rem' }}>
+                    ⚠️ Si vous changez votre e-mail, vous devrez vous connecter à nouveau.
+                </p>
                 <button
                     type="submit"
                     disabled={saving}
