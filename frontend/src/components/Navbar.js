@@ -1,22 +1,3 @@
-// import Link from 'next/link';
-//
-// export default function Navbar() {
-//     return (
-//         <nav className="bg-white text-black py-4 px-6 shadow">
-//             <div className="flex justify-between items-center max-w-4xl mx-auto">
-//                 <Link href="/" className="text-xl font-bold">
-//                     MyApp
-//                 </Link>
-//                 <div className="space-x-4">
-//                     <Link href="/account">Account</Link>
-//                     <Link href="/articles">Articles</Link>
-//                     <Link href="/logout">Logout</Link>
-//                 </div>
-//             </div>
-//         </nav>
-//     );
-// }
-
 import Link from 'next/link';
 
 export default function Navbar() {
