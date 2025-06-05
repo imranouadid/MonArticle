@@ -20,7 +20,6 @@ class CreateDemoAccountCommand extends Command
 {
     private const USER_PASSWORD = 'testPassword';
     private const SUCCESS_CREATE_ACCOUNT_MESSAGE = 'Demo account created successfully ✅';
-    private const ERROR_EMAIL_ALREADY_EXISTED = "<error>User with email %s already exists.</error>";
     private const COMMAND_DESCRIPTION = 'Creates a new demo account';
 
     public function __construct(
@@ -45,21 +44,17 @@ class CreateDemoAccountCommand extends Command
         $name = $input->getArgument('name');
 
         $existingUser = $this->documentManager->getRepository(User::class)->findOneBy(['email' => $email]);
-        if ($existingUser) {
-            $output->writeln(sprintf(self::ERROR_EMAIL_ALREADY_EXISTED, $email));
+        if (!$existingUser) {
+            $user = new User();
+            $user->setName($name);
+            $user->setEmail($email);
+            $user->setPassword(
+                $this->passwordHasher->hashPassword($user, self::USER_PASSWORD)
+            );
 
-            return Command::FAILURE;
+            $this->documentManager->persist($user);
+            $this->documentManager->flush();
         }
-
-        $user = new User();
-        $user->setName($name);
-        $user->setEmail($email);
-        $user->setPassword(
-            $this->passwordHasher->hashPassword($user, self::USER_PASSWORD)
-        );
-
-        $this->documentManager->persist($user);
-        $this->documentManager->flush();
 
         $output->writeln(self::SUCCESS_CREATE_ACCOUNT_MESSAGE);
 
