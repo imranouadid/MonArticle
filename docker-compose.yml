@@ -1,0 +1,49 @@
+version: '3'
+
+networks:
+  app-network:
+
+services:
+
+  nginx_service:
+    image: nginx:stable-alpine
+    container_name: nginx-container
+    restart: always
+    ports:
+      - "8080:80"
+    volumes:
+      - ./backend:/var/www/backend
+      - ./front:/var/www/frontend
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - mongo_service
+      - php_service
+    networks:
+      - app-network
+
+  php_service:
+    container_name: php-container
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    build:
+      context: .
+      dockerfile: ./docker/php/Dockerfile
+    ports:
+      - "9000:9000"
+    volumes:
+      - ./backend:/var/www/backend
+    networks:
+      - app-network
+
+  mongo_service:
+    image: mongo:latest
+    container_name: mongo-container
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - app-network
+
+volumes:
+  mongo-data:
